@@ -1,0 +1,38 @@
+Step 5) 
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		turnOffFlash();
+	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		getCamera();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if (camera != null) {
+			camera.release();
+			camera = null;
+		}
+	}
+	

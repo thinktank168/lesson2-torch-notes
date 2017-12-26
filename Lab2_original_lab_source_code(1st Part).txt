@@ -1,0 +1,108 @@
+
+1) Define MainActivity global variables
+
+	private Camera camera;
+	private boolean isFlashOn;
+	private boolean hasFlash;
+	Parameters param;
+
+
+
+2) Inside OnCreate Methods, cut & paste the following snippets.
+
+		// First check if device is supporting flashlight or not
+		hasFlash = getApplicationContext().getPackageManager()
+				.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+
+		if (!hasFlash) {
+			// device doesn't support flash
+			// Show alert message and close the application
+			AlertDialog alert = new AlertDialog.Builder(MainActivity.this)
+					.create();
+			alert.setTitle("Error");
+			alert.setMessage("Sorry, your device doesn't support flash light!");
+			alert.setButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					// closing the application
+					finish();
+				}
+			});
+			alert.show();
+			return;
+		}
+
+		getCamera();
+
+		ToggleButton flashSwitch = (ToggleButton) findViewById(R.id.flash_switch);
+
+		flashSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (isChecked) {
+					turnOffFlash(); 
+				} else {
+					turnOnFlash(); 
+				}
+			}
+		});
+	
+
+3) Create method getCamer(), in MainActivity class.
+
+private void getCamera() {
+		if (camera == null) {
+			try {
+				camera = Camera.open();
+				param = camera.getParameters();
+			} catch (RuntimeException e) {
+				Log.e("Camera Error. Failed to Open. Error: ", e.getMessage());
+			}
+		}
+	}
+
+
+
+
+4) Create method turnonFlash() and turnoffFlash()
+
+	// Turning On flash
+	private void turnOnFlash() {
+		if (!isFlashOn) {
+			if (camera == null || param == null) {
+				return;
+			}
+			param = camera.getParameters();
+			param.setFlashMode(Parameters.FLASH_MODE_TORCH);
+			camera.setParameters(param);
+			camera.startPreview();
+			isFlashOn = true;
+
+			Log.v("AndroidATC", "Flash has been turned on ...");
+
+		}
+
+	}
+
+	// Turning Off flash
+	private void turnOffFlash() {
+		if (isFlashOn) {
+			if (camera == null || param == null) {
+				return;
+			}
+			param = camera.getParameters();
+			param.setFlashMode(Parameters.FLASH_MODE_OFF);
+			camera.setParameters(param);
+			camera.stopPreview();
+			isFlashOn = false;
+
+			Log.v("AndroidATC", "Flash has been turned off ...");
+
+		}
+	}
+
+
+
+
+
